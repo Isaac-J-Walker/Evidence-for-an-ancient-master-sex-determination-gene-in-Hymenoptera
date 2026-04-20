@@ -52,7 +52,7 @@ vcftools --vcf filtered.vcf --window-pi 10000 --out filtered.pi
 
 ### Significance Calculation 
 ```
-Rscript get-zScore-pi.R filtered.pi [window index] [number of windows covering region]
+Rscript get-Perc-pi.R filtered.pi [window index] [number of windows covering region]
 ```
 
 ### Heterozygous Analysis
