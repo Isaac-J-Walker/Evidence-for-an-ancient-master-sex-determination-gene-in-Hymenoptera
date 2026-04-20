@@ -47,22 +47,27 @@ vcftools --vcf input.vcf --minQ 30 --minDP 5 --maxDP [mean read deoth x 3] --min
 
 ### Diversity File Generation
 ```
+# generating pi file with 10kb windows
 vcftools --vcf filtered.vcf --window-pi 10000 --out filtered.pi
 ```
 
 ### Significance Calculation 
 The PI file, the highest PI window, and the min number of windows needed to cover the entire ANTSR region, are input into the get-Perc-pi.R script. This calculates a percentile and corrected p-value for the window.
 ```
+# getting percentile and corrected p-value of high pi window
 Rscript get-Perc-pi.R filtered.pi [window index] [number of windows covering region]
 ```
 
 ### Heterozygous Analysis
 For heterozygous analysis, SNPs are filtered for heterozygous status using bcftools, and diversity and significance calculations were run on heterozygous VCF.
 ```
+# filtering for heterozygous snps
 bcftools view -g het -v snps filtered.vcf > het_snps.vcf
 
+# re-calculating diversity
 vcftools --vcf het_snps.vcf --window-pi 10000 --out het_snps.pi
 
+# re-calculating percentile and corrected p-value for high pi window.
 Rscript get-zScore-pi.R het_snps.pi [window index] [number of windows covering region]
 ```
 
@@ -70,6 +75,9 @@ Rscript get-zScore-pi.R het_snps.pi [window index] [number of windows covering r
 # Phylogenetic Reconstruction
 18SrRNA for each species were concatinated into a single fasta. This was then used as input for clusalo for multi-sequence alignment. The output of clustalo was then passed to iqtree2 for phylogenetic reconstruction.
 ```
+# creating multi-sequence alignment
 clustalo -i 18s_concat.fasta -o 18s_msa.fasta --force --outfmt=fasta
+
+# calculating phylogenetic tree
 iqtree2 -s 18s_aligned.fasta -redo -st DNA -m MFP -bb 1000 -alrt 1000
 ```
