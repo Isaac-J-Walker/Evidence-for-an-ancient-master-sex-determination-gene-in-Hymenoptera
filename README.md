@@ -73,11 +73,14 @@ Rscript get-zScore-pi.R het_snps.pi [window index] [number of windows covering r
 
 ---
 # Phylogenetic Reconstruction
-18SrRNA for each species were concatinated into a single fasta. This was then used as input for clusalo for multi-sequence alignment. The output of clustalo was then passed to iqtree2 for phylogenetic reconstruction.
+Proteomes for each species were downloaded from NCBI. BUSCO was run on one proteome initially for setup purposes, and then on the whole set. BUSCO's phylogenetics script was then ran on this output, using FastTree to generate the tree. The final tree was plotted on iTOL for figure 1B, and pruned for figure 2B. 
 ```
-# creating multi-sequence alignment
-clustalo -i 18s_concat.fasta -o 18s_msa.fasta --force --outfmt=fasta
+# run busco on one proteome to download hymenopteran lineage files
+busco -i hymenoptera_proteomes/GCF_000184785.3_Aflo_1.1_protein.faa -o setup_busco -m prot -l hymenoptera_odb10 -c 20
 
-# calculating phylogenetic tree
-iqtree2 -s 18s_aligned.fasta -redo -st DNA -m MFP -bb 1000 -alrt 1000
+# running busco on all proteomes
+ls hymenoptera_proteomes/*.faa | parallel -j 4 busco -i {} -o {/.} --out_path ./busco_results -m prot -l hymenoptera_odb10 -c 5 --offline
+
+# running busco phylogenetics script on busco results
+python3 BUSCO_phylogenomics/BUSCO_phylogenomics.py -i busco_results/ -o phylogenetic_output -t 20 -psc 90 --mafft --supermatrix_only --gene_tree_program FastTree > busco_phylogenomics.log 2>&1 &
 ```
