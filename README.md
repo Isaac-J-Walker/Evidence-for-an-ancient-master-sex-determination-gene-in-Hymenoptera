@@ -75,7 +75,7 @@ Rscript get-zScore-pi.R het_snps.pi [window index] [number of windows covering r
 # Phylogenetic Reconstruction
 Proteomes for each species were downloaded from NCBI. BUSCO was run on one proteome initially for setup purposes, and then on the whole set. BUSCO's phylogenetics script was then run on this output, using FastTree to generate the tree. The final tree was plotted on iTOL for figure 1B, and pruned for figure 2B. 
 ```
-# run busco on one proteome to download hymenopteran lineage files
+# running busco on one proteome to download hymenopteran lineage files
 busco -i hymenoptera_proteomes/GCF_000184785.3_Aflo_1.1_protein.faa -o setup_busco -m prot -l hymenoptera_odb10 -c 20
 
 # running busco on all proteomes
